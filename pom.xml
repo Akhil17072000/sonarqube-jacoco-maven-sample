@@ -4,8 +4,8 @@
     <groupId>com.example</groupId>
     <artifactId>simplewebapp</artifactId>
     <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>simplewebapp</name>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>simplewebapp-11</name>
 
     <properties>
         <spring.version>4.1.1.RELEASE</spring.version>
@@ -13,6 +13,8 @@
 
         <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.jacoco.itReportPath>target/jacoco-it.exec</sonar.jacoco.itReportPath>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
 
     <profiles>
@@ -27,7 +29,7 @@
                         <configuration>
                             <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                             <testFailureIgnore>true</testFailureIgnore>
-                            <argLine>${failsafeArgLine}</argLine>
+<!--                            <argLine>${failsafeArgLine}</argLine>-->
                         </configuration>
                         <executions>
                             <execution>
@@ -45,15 +47,17 @@
                         <configuration>
                             <stopPort>9699</stopPort>
                             <stopKey>foo</stopKey>
-                            <jvmArgs>${failsafeArgLine}</jvmArgs>
+<!--                            <jvmArgs>${failsafeArgLine}</jvmArgs>-->
                         </configuration>
                         <executions>
                             <execution>
                                 <id>start-jetty</id>
                                 <phase>pre-integration-test</phase>
                                 <configuration>
-                                    <daemon>true</daemon>
+<!--                                    <daemon>true</daemon>-->
                                     <waitForChild>false</waitForChild>
+                                    <stopKey/>
+                                    <stopPort/>
                                 </configuration>
                                 <goals>
                                     <goal>run-forked</goal>
@@ -71,6 +75,21 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <sonar.jdbc.url>
+                    jdbc:mysql://localhost:5433/sonar?useUnicode=true&amp;characterEncoding=utf8
+                </sonar.jdbc.url>
+                <sonar.jdbc.username>admin</sonar.jdbc.username>
+                <sonar.jdbc.password>password</sonar.jdbc.password>
+                <sonar.host.url>http://127.0.0.1:9000</sonar.host.url>
+            </properties>
+        </profile>
     </profiles>
 
     <dependencies>
@@ -79,6 +98,7 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -103,6 +123,7 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+
                 </configuration>
             </plugin>
             <plugin>
@@ -114,7 +135,9 @@
                         <include>**/*Test.java</include>
                     </includes>
                     <testFailureIgnore>true</testFailureIgnore>
-                    <argLine>${surefireArgLine}</argLine>
+<!--                    <argLine>${surefireArgLine}</argLine>-->
+<!--                    /<argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>-->
+
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -163,11 +186,22 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>9.0.7.v20131107</version>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>sonar-maven-plugin</artifactId>-->
+<!--                <version>2.7.1</version>-->
+<!--            </plugin>-->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>2.6</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.1</version>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.sonarsource.scanner.maven</groupId>-->
+<!--                <artifactId>sonar-maven-plugin</artifactId>-->
+<!--                <version>3.2</version>-->
+<!--            </plugin>-->
+
         </plugins>
     </build>
 </project>
